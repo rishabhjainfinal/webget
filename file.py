@@ -6,7 +6,6 @@ import urllib.parse as urlparse
 import tqdm
 requests.packages.urllib3.disable_warnings()  
 
-
 class downloader:
     def __init__(self, url, out=None, directory=None, render=True):
         self.url = url
@@ -127,12 +126,12 @@ class downloader:
                 tovisit ,visited= set(filter(lambda x: x not in visited, new_routes)), set([*tovisit,*visited])
                 return visited,tovisit
         except KeyboardInterrupt :
-            print('Exiting the program ...') 
-            return set(),set()
+            print('Canceling the layer') 
         except Exception as e:
             print(e)
         finally :
             self.move_files()
+            return set(),set()
 
     def move_files(self):
         filenames = [_file for _file in os.listdir(self.dir) if os.path.isfile(os.path.join(self.dir, _file))]
@@ -151,7 +150,6 @@ class downloader:
                 if os.path.exists(new_path):
                     new_path = self.fix_if_file_exist(new_path)
                 os.rename(os.path.join(self.dir,name),new_path)   
-
 
     @classmethod
     def get(cls, url, out=None, directory=None, render=True):
@@ -198,7 +196,7 @@ if __name__ == "__main__":
         else :
             directory = None
             filename = args.out
-            if '/' in args.out:
+            if args.out and '/' in args.out:
                 filename = os.path.basename(args.out)
                 directory = args.out.replace(f'/{filename}','')
             name = downloader.get(args.url ,out=filename,directory= directory ,render=True)
